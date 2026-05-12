@@ -2,8 +2,8 @@ name: Scheduler Workflow
 
 on:
   schedule:
-    # Se ejecuta todos los días a las 9:00 AM (UTC)
-    - cron: '0 9 * * *'
+    # Se ejecuta todos los días a las 23:59 (UTC)
+    - cron: '59 23 * * *'
   # Permite ejecutar manualmente desde Actions
   workflow_dispatch:
 
@@ -19,4 +19,3 @@ jobs:
   call-another-workflow:
     needs: invoke-workflow
     uses: ./.github/workflows/another-workflow.yml
-    
