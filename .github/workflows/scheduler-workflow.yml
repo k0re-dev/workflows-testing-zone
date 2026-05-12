@@ -14,10 +14,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Invocar otro workflow
-        run: |
-          gh workflow run another-workflow.yml \
-            --ref ${{ github.ref }} \
-            --field param1="valor1"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: validate execution
+        run: echo "Ejecutando workflow programado"
+  call-another-workflow:
+    needs: invoke-workflow
+    uses: ./.github/workflows/another-workflow.yml
+    
