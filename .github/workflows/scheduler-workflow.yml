@@ -1,0 +1,23 @@
+name: Scheduler Workflow
+
+on:
+  schedule:
+    # Se ejecuta todos los días a las 9:00 AM (UTC)
+    - cron: '0 9 * * *'
+  # Permite ejecutar manualmente desde Actions
+  workflow_dispatch:
+
+jobs:
+  invoke-workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Invocar otro workflow
+        run: |
+          gh workflow run another-workflow.yml \
+            --ref ${{ github.ref }} \
+            --field param1="valor1"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

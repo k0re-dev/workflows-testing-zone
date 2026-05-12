@@ -1,0 +1,12 @@
+name: Another Workflow
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  simple-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print message
+        run: echo "workflow activado"
