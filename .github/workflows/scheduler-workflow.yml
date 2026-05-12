@@ -15,7 +15,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: validate execution
-        run: echo "Ejecutando workflow programado"
+        run: |
+          echo "Ejecutando workflow programado"
+          echo "Fecha/hora del runner (local): $(date '+%Y-%m-%d %H:%M:%S %Z')"
+          echo "Fecha/hora UTC: $(date -u '+%Y-%m-%d %H:%M:%S %Z')"
   call-another-workflow:
     needs: invoke-workflow
     uses: ./.github/workflows/another-workflow.yml
