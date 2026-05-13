@@ -3,7 +3,7 @@ name: Scheduler Workflow
 on:
   schedule:
     # Se ejecuta todos los días a las 23:59 (UTC)
-    - cron: '34 5 * * *'  
+    - cron: '*/5 * * * *'  
   # Permite ejecutar manualmente desde Actions
   workflow_dispatch:
 
