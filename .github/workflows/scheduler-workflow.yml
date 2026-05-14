@@ -1,6 +1,8 @@
 name: Scheduler Workflow
 
 on:
+  push:
+    branches: main
   workflow_dispatch:
   schedule:
     # Se ejecuta todos los días a las 23:59 (UTC)
