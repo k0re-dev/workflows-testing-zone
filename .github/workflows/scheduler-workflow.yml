@@ -4,11 +4,6 @@ on:
   push:
     branches: main
   workflow_dispatch:
-  schedule:
-    # Se ejecuta todos los días a las 23:59 (UTC)
-    - cron: '*/15 * * * *'  
-  # Permite ejecutar manualmente desde Actions
-
 jobs:
   invoke-workflow:
     runs-on: ubuntu-latest
