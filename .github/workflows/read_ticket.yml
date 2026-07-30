@@ -1,0 +1,62 @@
+name: Leer ticket de Jira
+ 
+# Se puede disparar manualmente desde la pestaña "Actions" en GitHub,
+# pasando la clave del ticket como input (ej: DEMO-1)
+on:
+  workflow_dispatch:
+    inputs:
+      ticket_key:
+        description: "Clave del ticket de Jira (ej: DEMO-1)"
+        required: true
+        type: string
+ 
+jobs:
+  leer-ticket:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Consultar la API de Jira
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          TICKET_KEY: ${{ inputs.ticket_key }}
+        run: |
+          echo "Consultando el ticket $TICKET_KEY..."
+ 
+          # Llamada a la API REST de Jira (v3), autenticada con Basic Auth (email + API token)
+          curl -s -u "$JIRA_EMAIL:$JIRA_API_TOKEN" \
+            -H "Accept: application/json" \
+            "$JIRA_BASE_URL/rest/api/3/issue/$TICKET_KEY" \
+            -o ticket.json
+ 
+          echo "Respuesta cruda guardada en ticket.json"
+ 
+      - name: Extraer campos clave del ticket
+        run: |
+          echo "----- RESUMEN DEL TICKET -----"
+          echo "Título:"
+          jq -r '.fields.summary' ticket.json
+ 
+          echo ""
+          echo "Estado:"
+          jq -r '.fields.status.name' ticket.json
+ 
+          echo ""
+          echo "Asignado a:"
+          jq -r '.fields.assignee.displayName // "Sin asignar"' ticket.json
+ 
+          echo ""
+          echo "Tipo de issue:"
+          jq -r '.fields.issuetype.name' ticket.json
+ 
+          echo ""
+          echo "Descripción (texto plano, primeros 500 caracteres):"
+          jq -r '.fields.description.content[]?.content[]?.text? // empty' ticket.json | head -c 500
+          echo ""
+ 
+      - name: Subir el JSON completo como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: jira-ticket-${{ inputs.ticket_key }}
+          path: ticket.json
+ 
